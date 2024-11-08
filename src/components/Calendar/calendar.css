@@ -1,0 +1,50 @@
+.calendar {
+
+    --_opacity-value: 1;
+}
+
+.calendar__grid:has( + .calendar__footer > .calendar__footer__list > li:hover) > .calendar__grid__monthdays > .calendar__day:not([data-sale="true"])  {
+
+    opacity: 25%;
+}
+
+.calendar__day {
+
+    &[data-sale="true"] {
+
+        position: relative;
+
+        &::after {
+            content: "";
+            opacity: var(--_opacity-value);
+            aspect-ratio: 1;
+            position: absolute;
+            border-radius: 50%;
+            display: block;
+            width: min(.4em, 1.4vmin);
+            bottom: 10%;
+            right: 50%;
+            transition: opacity 2s ease;
+            animation: fade .8s forwards;
+
+            translate: 250%;
+        }
+    }
+}
+
+/*
+ANIMATIONS
+*/
+
+@keyframes fade {
+
+    0% {
+        scale: 0;
+        opacity: 0%;
+    }
+    
+    100% {
+        scale: initial;
+        opacity: initial;
+    }
+}
