@@ -14,7 +14,7 @@ function PaymentDetailBoxItem( { label, value }:PaymentDetailsBoxItemProps ) {
                         {label}:
                     </span>
 
-                    <span className="brightness-100 text-sm font-thin">
+                    <span className="text-xs font-thin">
                         <strong>
                             { value || "0, 00" }
                         </strong>

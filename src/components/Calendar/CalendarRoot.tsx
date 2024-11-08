@@ -187,7 +187,7 @@ export default function CalendarRoot() {
       </article>
 
       <PaymentDetailBox
-        keyAndValues={[{label: "Total", value: "69.90"}, {label: "Valor a receber", "value": "69.99"} ]}
+        keyAndValues={[{label: "Total", value: "69.90"}, {label: "Pago", "value": "69.99"} ]}
         date={currentDate.toLocaleDateString("pt-br")}
         
       />
