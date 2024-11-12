@@ -1,15 +1,4 @@
-export type PaymentStatusType = "paid" | "scheduled"
-
-export type mockValuesType = {
-
-    date: string
-    value: number
-    status: PaymentStatusType
-    hasHoliday?: boolean
-    ISODate?: string
-}
-
-export const mockValues: mockValuesType[] = [
+const mockValues = [
     { date: "21/12/2022", value: 204.00, status: "paid" },
     { date: "01/11/2024", value: 1233.00, status: "paid" },
     { date: "03/11/2024", value: 1233.00, status: "scheduled" },
@@ -28,3 +17,10 @@ export const mockValues: mockValuesType[] = [
     { date: "29/12/2024", value: 69.00, status: "scheduled"},
     { date: "22/01/2025", value: 65.77, status: "scheduled"}
 ]
+
+const checkForPayement = () => {
+
+    console.log(mockValues.filter(value => value.status === "paid"))
+}
+
+checkForPayement()
