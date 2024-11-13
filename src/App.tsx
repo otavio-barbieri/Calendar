@@ -7,15 +7,15 @@ function App() {
 
   return (
     <>
-     <CalendarRoot />
+      <CalendarRoot />
 
-     <Select placeholder='Pao com ovo é totoso' options={[{key: "Hell", value: 2 }, { key: "DOG", value: 3}, { key: "DOGoo", value: 4}, { key: "WOW", value: 5}, { key: "SCADUSH", value: 6}]} />
+      <Select placeholder='Pao com ovo é totoso' options={[{ key: "Hell", value: 2 }, { key: "DOG", value: 3 }, { key: "DOGoo", value: 4 }, { key: "WOW", value: 5 }, { key: "SCADUSH", value: 6 }]} />
 
-     <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Placeat suscipit repellat exercitationem tempore illum sapiente. Harum non sit assumenda molestias deleniti, sequi nemo in veniam voluptatem debitis, repellat dolores perferendis?</p>
+      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Placeat suscipit repellat exercitationem tempore illum sapiente. Harum non sit assumenda molestias deleniti, sequi nemo in veniam voluptatem debitis, repellat dolores perferendis?</p>
 
-     <Calendar.Root>
-      <Calendar.Header  />
-     </Calendar.Root>
+      <Calendar.Root>
+        <Calendar.Header />
+      </Calendar.Root>
     </>
   )
 }

@@ -12,12 +12,16 @@ function PaymentDetailBoxItem({ label, value, isHighlighted }: PaymentDetailsBox
 
     return (
 
-        <div className="flex justify-between w-full items-baseline">
-            <span className={`brightness-75 text-xs text-left ${isHighlighted && 'font-semibold'}`}>
+        <div 
+            className={`flex justify-between w-full items-baseline ${isHighlighted ? 'text-sm font-semibold mt-0.5' : 'text-xs'}`}
+        >
+            <span 
+                className="brightness-75 text-left"
+            >
                 {label}:
             </span>
 
-            <span className="text-xs font-thin">
+            <span className={`${isHighlighted ? 'font-normal' : 'font-thin'}`}>
                 <strong>
                     {formattedValue || 0}
                 </strong>

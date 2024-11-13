@@ -34,6 +34,7 @@ export default function PaymentDetailBox({ date, keyAndValues, ...rest }: Paymen
                         key={item.label + idx}
                         label={item.label}
                         value={item.value}
+                        isHighlighted={item.isHighlighted}
                     />
                 ))}
             </div>

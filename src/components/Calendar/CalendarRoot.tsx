@@ -326,7 +326,7 @@ export default function CalendarRoot() {
         keyAndValues={[
           { label: "Agendado", value: paymentDetailsBoxData.scheduledValues || 0 },
           { label: "Pago", value: paymentDetailsBoxData.paidValues || 0 },
-          { label: "Total", value: paymentDetailsBoxData.paidValues + paymentDetailsBoxData.scheduledValues || 0 },
+          { label: "Total", value: paymentDetailsBoxData.paidValues + paymentDetailsBoxData.scheduledValues || 0, isHighlighted: true },
         ]}
         date={currentDate.toLocaleDateString("pt-br")}
       />
