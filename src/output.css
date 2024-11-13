@@ -1011,6 +1011,12 @@ video {
   background-color: rgb(239 68 68 / var(--tw-bg-opacity));
 }
 
+.data-\[status\=\"paid\"\]\:after\:bg-gray-500[data-status="paid"]::after {
+  content: var(--tw-content);
+  --tw-bg-opacity: 1;
+  background-color: rgb(107 114 128 / var(--tw-bg-opacity));
+}
+
 .data-\[selected\=\"true\"\]\:focus-visible\:outline-2:focus-visible[data-selected="true"] {
   outline-width: 2px;
 }

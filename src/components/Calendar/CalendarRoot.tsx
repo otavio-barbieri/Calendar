@@ -291,7 +291,7 @@ export default function CalendarRoot() {
                   {...(dayInfo?.status === "paid"
                     ? { "data-status": "paid" }
                     : { "data-status": "scheduled" })}
-                  className={`calendar__day px-4 brightness-90 hover:opacity-75 w-[2ch] data-[selected="true"]:border-2 data-[selected="true"]:text-black data-[selected="true"]:bg-white data-[selected="true"]:focus-visible:outline-2 data-[selected="true"]:focus-visible:outline-black rounded-md aspect-square flex items-center justify-center transition-opacity duration-500 data-[status="paid"]:after:bg-red-500 data-[sale="true"]:after:bg-green-500 data-[sale="scheduled"]:after:bg-gray-300 ${
+                  className={`calendar__day px-4 brightness-90 hover:opacity-75 w-[2ch] data-[selected="true"]:border-2 data-[selected="true"]:text-black data-[selected="true"]:bg-white data-[selected="true"]:focus-visible:outline-2 data-[selected="true"]:focus-visible:outline-black rounded-md aspect-square flex items-center justify-center transition-opacity duration-500 data-[status="paid"]:after:bg-gray-500 data-[sale="true"]:after:bg-green-500 data-[sale="scheduled"]:after:bg-gray-300 ${
                     day === null ? "empty:pointer-events-none" : ""
                   }`}
                   onClick={() => changeDay(day as number)}

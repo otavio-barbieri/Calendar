@@ -20,7 +20,7 @@ export const mockValues: mockValuesType[] = [
     { date: "15/11/2024", value: 1233.00, status: "paid", hasHoliday: true },
     { date: "18/11/2024", value: 1233.00, status: "scheduled" },
     { date: "18/11/2024", value: 1233.00, status: "scheduled" },
-    { date: "18/11/2024", value: 1233.00, status: "scheduled" },
+    { date: "18/11/2024", value: 3.00, status: "paid" },
     { date: "18/11/2024", value: 1233.00, status: "scheduled" },
     { date: "21/11/2024", value: 1233.00, status: "paid" },
     { date: "25/11/2024", value: 1233.00, status: "scheduled" },

@@ -3,7 +3,13 @@
     --_opacity-value: 1;
 }
 
-.calendar__grid:has( + .calendar__footer > .calendar__footer__list > li:hover) > .calendar__grid__monthdays > .calendar__day:not([data-sale="true"])  {
+/* .calendar__grid:has( + .calendar__footer > .calendar__footer__list > li:hover) > .calendar__grid__monthdays > .calendar__day:not([data-sale="true"])  {
+
+    opacity: 25%;
+} */
+
+.calendar__grid:has(+ .calendar__footer > .calendar__footer__list > li[data-label="agendado"]:hover)>.calendar__grid__monthdays>.calendar__day:not([data-status="scheduled"]),
+.calendar__grid:has(+ .calendar__footer > .calendar__footer__list > li[data-label="pago"]:hover)>.calendar__grid__monthdays>.calendar__day:not([data-status="paid"]) {
 
     opacity: 25%;
 }
@@ -42,7 +48,7 @@ ANIMATIONS
         scale: 0;
         opacity: 0%;
     }
-    
+
     100% {
         scale: initial;
         opacity: initial;
