@@ -2,9 +2,10 @@ import { HTMLAttributes, useEffect, useRef, useState } from "react";
 
 type keyValueOptions = { key: string; value?: string | number };
 
-interface SelectProps extends HTMLAttributes<HTMLDivElement> {
+interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
   placeholder?: string;
   defaultValue?: string;
+  onSelectChange: (value: string) => void;
   value?: string;
   options: string[] | keyValueOptions[];
   isModal?: boolean;
@@ -17,6 +18,7 @@ export default function Select({
   placeholder,
   options,
   value = "",
+  onSelectChange,
   variant = "default",
   size = "fluid",
   spacing = "default",
@@ -80,7 +82,9 @@ export default function Select({
     }
     setIsOpen(false);
     setFocusedIndex(-1);
+    onSelectChange(selectedOption.value)
   };
+
 
   return (
     <div
