@@ -12,6 +12,7 @@ import PaymentDetailBox from "../PaymentDetailBox/PaymentDetailBox";
 
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import CalendarFooter from "./CalendarFooter";
+import Select from "../Select/Select";
 
 enum WeekDays {
   "domingo",
@@ -204,6 +205,7 @@ export default function CalendarRoot() {
         <header className="calendar__header flex justify-between items-center mb-3">
           <div className="calendar__month-year w-fit flex flex-col items-end">
             <h2 className="calendar__title">
+              <Select size="mini" spacing="default" options={[{key: 'tom jobim', value: 10}]} />
               <select
                 className="calendar__select hover:opacity-80 transition-opacity text-end text-lg cursor-pointer capitalize appearance-none border-none bg-transparent"
                 value={currentMonth}
@@ -320,16 +322,25 @@ export default function CalendarRoot() {
         <CalendarFooter
           legends={[
             { label: "pago", color: "bg-green-500" },
-            { label: "agendado", color: "bg-gray-500" }
+            { label: "agendado", color: "bg-gray-500" },
           ]}
         />
       </article>
 
       <PaymentDetailBox
         keyAndValues={[
-          { label: "Agendado", value: paymentDetailsBoxData.scheduledValues || 0 },
+          {
+            label: "Agendado",
+            value: paymentDetailsBoxData.scheduledValues || 0,
+          },
           { label: "Pago", value: paymentDetailsBoxData.paidValues || 0 },
-          { label: "Total", value: paymentDetailsBoxData.paidValues + paymentDetailsBoxData.scheduledValues || 0, isHighlighted: true },
+          {
+            label: "Total",
+            value:
+              paymentDetailsBoxData.paidValues +
+                paymentDetailsBoxData.scheduledValues || 0,
+            isHighlighted: true,
+          },
         ]}
         date={currentDate.toLocaleDateString("pt-br")}
       />
