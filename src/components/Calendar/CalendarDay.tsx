@@ -1,5 +1,3 @@
-import React from "react";
-
 interface CalendarDayProps {
   day: number | null;
   selectedDay: number;
