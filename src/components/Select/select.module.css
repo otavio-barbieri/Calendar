@@ -1,0 +1,6 @@
+.select,
+.select * {
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}

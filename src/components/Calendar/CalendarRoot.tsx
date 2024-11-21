@@ -187,8 +187,8 @@ export default function CalendarRoot() {
         const status = sale.paidValues?.length
           ? "paid"
           : sale.scheduledValues?.length
-            ? "scheduled"
-            : undefined;
+          ? "scheduled"
+          : undefined;
         return { hasSale: true, status };
       }
       return { hasSale: false };
@@ -205,16 +205,15 @@ export default function CalendarRoot() {
         <header className="calendar__header flex justify-between items-center mb-3">
           <div className="calendar__month-year w-fit flex flex-col items-end">
             <h2 className="calendar__title">
-              <Select 
-                className="calendar__select hover:opacity-80 transition-opacity text-end text-lg cursor-pointer capitalize appearance-none border-none bg-transparent" 
-                size="mini" 
-                spacing="default" 
+              <Select
+                variant="ghost"
+                size="fluid"
+                spacing="default"
                 options={months}
                 onSelectChange={(value) =>
-                  setCurrentDate(
-                    new Date(currentYear, parseInt(value), 1)
-                  )
-                } />
+                  setCurrentDate(new Date(currentYear, parseInt(value), 1))
+                }
+              />
               <select
                 className="calendar__select hover:opacity-80 transition-opacity text-end text-lg cursor-pointer capitalize appearance-none border-none bg-transparent"
                 value={currentMonth}
@@ -305,8 +304,9 @@ export default function CalendarRoot() {
                   {...(dayInfo?.status === "paid"
                     ? { "data-status": "paid" }
                     : { "data-status": "scheduled" })}
-                  className={`calendar__day px-4 brightness-90 hover:opacity-75 w-[2ch] data-[selected="true"]:border-2 data-[selected="true"]:text-black data-[selected="true"]:bg-white data-[selected="true"]:focus-visible:outline-2 data-[selected="true"]:focus-visible:outline-black rounded-md aspect-square flex items-center justify-center transition-opacity duration-500 data-[status="paid"]:after:bg-gray-500 data-[sale="true"]:after:bg-green-500 data-[sale="scheduled"]:after:bg-gray-300 ${day === null ? "empty:pointer-events-none" : ""
-                    }`}
+                  className={`calendar__day px-4 brightness-90 hover:opacity-75 w-[2ch] data-[selected="true"]:border-2 data-[selected="true"]:text-black data-[selected="true"]:bg-white data-[selected="true"]:focus-visible:outline-2 data-[selected="true"]:focus-visible:outline-black rounded-md aspect-square flex items-center justify-center transition-opacity duration-500 data-[status="paid"]:after:bg-gray-500 data-[sale="true"]:after:bg-green-500 data-[sale="scheduled"]:after:bg-gray-300 ${
+                    day === null ? "empty:pointer-events-none" : ""
+                  }`}
                   onClick={() => changeDay(day as number)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
@@ -346,7 +346,7 @@ export default function CalendarRoot() {
             label: "Total",
             value:
               paymentDetailsBoxData.paidValues +
-              paymentDetailsBoxData.scheduledValues || 0,
+                paymentDetailsBoxData.scheduledValues || 0,
             isHighlighted: true,
           },
         ]}

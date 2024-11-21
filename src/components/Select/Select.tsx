@@ -1,8 +1,10 @@
 import { HTMLAttributes, useEffect, useRef, useState } from "react";
 
+import styles from "./select.module.css";
+
 type keyValueOptions = { key: string; value?: string | number };
 
-interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
+interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
   placeholder?: string;
   defaultValue?: string;
   onSelectChange: (value: string) => void;
@@ -25,6 +27,7 @@ export default function Select({
   ...rest
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectShouldBeUpwards, setSelectMustBeUpwards] = useState<boolean>(true);
   const [selectedOption, setSelectedOption] = useState<keyValueOptions>({
     key: value || placeholder || "Selecione uma opção",
     value: value,
@@ -50,7 +53,7 @@ export default function Select({
   const dropDownRef = useRef<HTMLDivElement>(null);
   const optionRefs = useRef<(HTMLLIElement | null)[]>([]);
 
-  const toggleDropDown = () => setIsOpen(!isOpen);
+  const toggleDropDown = () => setIsOpen((prev) => !prev);
 
   useEffect(() => {
     const handleClickOutside = (event: Event) => {
@@ -74,6 +77,12 @@ export default function Select({
     }
   }, [focusedIndex]);
 
+  useEffect(() => {
+    if (isOpen) {
+      determineDropdownPosition();
+    }
+  }, [isOpen]);
+
   const handleOptionClick = (option: string | keyValueOptions) => {
     if (typeof option === "string") {
       setSelectedOption({ key: option, value: option });
@@ -82,18 +91,27 @@ export default function Select({
     }
     setIsOpen(false);
     setFocusedIndex(-1);
-    onSelectChange(selectedOption.value)
+    onSelectChange(selectedOption.value?.toString() || "");
   };
 
+  const determineDropdownPosition = () => {
+    if (dropDownRef.current) {
+      const rect = dropDownRef.current.getBoundingClientRect();
+      const dropdownHeight = dropDownRef.current.scrollHeight;
+      const spaceBelow = window.innerHeight - rect.bottom;
+      const spaceAbove = rect.top;
+
+      setSelectMustBeUpwards(spaceBelow < dropdownHeight && spaceAbove > dropdownHeight);
+    }
+  };
 
   return (
     <div
-      className={`cursor-pointer relative ${sizeVariants[size || "fluid"]}`}
+      className={`cursor-pointer relative ${sizeVariants[size || "fluid"]} ${styles.select}`}
       role="combobox"
       ref={dropDownRef}
       aria-haspopup="listbox"
       aria-expanded={isOpen}
-      onChange={() => console.log("changed")}
       {...rest}
     >
       <button
@@ -109,47 +127,53 @@ export default function Select({
         {selectedOption.key}
       </button>
       {isOpen && (
-        <ul
-          className="grid gap-1 w-fit py-5 p-2 border rounded-lg absolute top-[100%] left-0 z-10 bg-black"
-          role="listbox"
-          aria-labelledby="select-button"
+        <div
+          className={`absolute ${
+            selectShouldBeUpwards ? "bottom-[100%] mb-2" : "top-[100%] mt-2"
+          } left-0 z-10`}
         >
-          {options.map((option, index) => (
-            <li
-              className="rounded-md text-center py-2 px-3 hover:bg-gray-700 text-balance break-words"
-              key={index}
-              tabIndex={0}
-              ref={(el) => (optionRefs.current[index] = el)}
-              role="option"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleOptionClick(option);
-                } else if (e.key === "ArrowDown") {
-                  e.preventDefault();
-                  setFocusedIndex(
-                    (prevIndex) => (prevIndex + 1) % options.length
-                  );
-                } else if (e.key === "ArrowUp") {
-                  e.preventDefault();
-                  setFocusedIndex(
-                    (prevIndex) =>
-                      (prevIndex - 1 + options.length) % options.length
-                  );
-                } else if (e.key === "Escape") {
-                  setIsOpen(false);
-                  setFocusedIndex(-1);
+          <ul
+            className="grid gap-1 max-h-64 overflow-y-auto w-fit py-5 p-2 border rounded-lg bg-black"
+            role="listbox"
+            aria-labelledby="select-button"
+          >
+            {options.map((option, index) => (
+              <li
+                className="rounded-md capitalize text-center py-2 px-3 hover:bg-gray-700 text-balance break-words isolate"
+                key={index}
+                tabIndex={0}
+                ref={(el) => (optionRefs.current[index] = el)}
+                role="option"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleOptionClick(option);
+                  } else if (e.key === "ArrowDown") {
+                    e.preventDefault();
+                    setFocusedIndex(
+                      (prevIndex) => (prevIndex + 1) % options.length
+                    );
+                  } else if (e.key === "ArrowUp") {
+                    e.preventDefault();
+                    setFocusedIndex(
+                      (prevIndex) =>
+                        (prevIndex - 1 + options.length) % options.length
+                    );
+                  } else if (e.key === "Escape") {
+                    setIsOpen(false);
+                    setFocusedIndex(-1);
+                  }
+                }}
+                onClick={() => handleOptionClick(option)}
+                aria-selected={
+                  selectedOption.key ===
+                  (typeof option === "string" ? option : option.key)
                 }
-              }}
-              onClick={() => handleOptionClick(option)}
-              aria-selected={
-                selectedOption.key ===
-                (typeof option === "string" ? option : option.key)
-              }
-            >
-              {typeof option === "string" ? option : option.key}
-            </li>
-          ))}
-        </ul>
+              >
+                {typeof option === "string" ? option : option.key}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );
