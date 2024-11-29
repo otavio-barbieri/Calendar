@@ -1,4 +1,8 @@
-import { ReactNode, useMemo, useState } from "react";
+import {
+  ReactNode,
+  useMemo,
+  useState,
+} from "react";
 
 import "./calendar.css";
 
@@ -12,17 +16,8 @@ import PaymentDetailBox from "../PaymentDetailBox/PaymentDetailBox";
 
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import CalendarFooter from "./CalendarFooter";
-import Select from "../Select/Select";
-
-enum WeekDays {
-  "domingo",
-  "segunda-Feira",
-  "terça-feira",
-  "quarta-feira",
-  "quinta-feira",
-  "sexta-feira",
-  "sábado",
-}
+import Select, { keyValueOptions } from "../Select/Select";
+import { WeekDay } from "../../types";
 
 export type PaymentDays = {
   date: string;
@@ -39,6 +34,13 @@ export default function CalendarRoot() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const selectedDay = currentDate.getDate();
 
+  console.log("CURRENT DATE", currentDate);
+
+  /**
+   *
+   * @param {mockValuesType} arr
+   * @returns An array with the data properly converted to PaymentDays type.
+   */
   const transformIncomingDataIntoPaymentStucuture = (
     arr: mockValuesType[]
   ): PaymentDays[] => {
@@ -52,6 +54,11 @@ export default function CalendarRoot() {
     }));
   };
 
+  /**
+   *
+   * @param date in DDMMYYY format
+   * @returns The date in the ISO format YYYYMMDD
+   */
   const convertDMYToISO = (date: string) => {
     const [day, month, year] = date.split("/");
     return `${year}-${month}-${day}`;
@@ -133,9 +140,10 @@ export default function CalendarRoot() {
     },
   ];
 
-  const months = [...Array(12).keys()].map((key) =>
-    new Date(0, key).toLocaleString("pt-br", { month: "long" })
-  );
+  const months = [...Array(12).keys()].map((key) => ({
+    label: new Date(0, key).toLocaleString("pt-br", { month: "long" }),
+    value: key,
+  }));
 
   const getCurrentMonthDetails = (date: Date) => {
     const currentMonth = date.getMonth();
@@ -198,60 +206,55 @@ export default function CalendarRoot() {
     }
   };
 
+  const keyValuesDate = useMemo(() => ({
+    month: {
+      label: currentDate.toLocaleDateString("pt-br", { month: "long" }),
+      value: currentMonth,
+    } as keyValueOptions,
+    year: {
+      label: currentDate.getFullYear().toString(),
+      value: currentYear,
+    } as keyValueOptions,
+  }), [currentDate, currentMonth, currentYear]);
+
+  console.log("KEY VALUES", keyValuesDate)
+
   return (
     <div className="flex flex-col md:flex-row gap-2 items-center">
       <article className="calendar p-4 rounded-lg border w-full min-w-[45dvw] grid gap-2">
         {/* Calendar Header */}
         <header className="calendar__header flex justify-between items-center mb-3">
-          <div className="calendar__month-year w-fit flex flex-col items-end">
+          <div className="calendar__month-year flex flex-col justify-center items-end">
             <h2 className="calendar__title">
               <Select
                 variant="ghost"
-                size="fluid"
-                spacing="default"
+                size="maxContent"
+                spacing="tight"
+                value={
+                  keyValuesDate.month
+                }
                 options={months}
                 onSelectChange={(value) =>
-                  setCurrentDate(new Date(currentYear, parseInt(value), 1))
+                  setCurrentDate(new Date(currentYear, parseInt(value as string), 1))
                 }
               />
-              <select
-                className="calendar__select hover:opacity-80 transition-opacity text-end text-lg cursor-pointer capitalize appearance-none border-none bg-transparent"
-                value={currentMonth}
-                onChange={(e) =>
-                  setCurrentDate(
-                    new Date(currentYear, parseInt(e.target.value), 1)
-                  )
-                }
-              >
-                {months.map((item, idx) => (
-                  <option
-                    className="calendar__option text-black"
-                    key={idx}
-                    value={idx}
-                    aria-selected={currentMonth === idx}
-                  >
-                    {item}
-                  </option>
-                ))}
-              </select>
             </h2>
-            <small>
-              <select
-                className="calendar__select calendar__select--small focus:outline-none appearance-none brightness-75 bg-transparent cursor-pointer hover:opacity-80 transition-opacity"
-                value={currentYear}
-                onChange={(e) =>
-                  setCurrentDate(
-                    new Date(parseInt(e.target.value), currentMonth, 1)
-                  )
+              <Select
+                size="maxContent"
+                variant="ghost"
+                spacing="tight"
+                className="text-sm"
+                value={
+                  keyValuesDate.year
                 }
-              >
-                {generateArrayOfYears(1999, 50).map((item) => (
-                  <option className="calendar__option" key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </small>
+                options={generateArrayOfYears(1999, 50).map((year) => ({
+                  label: year.toString(),
+                  value: year.toString(),
+                }))}
+                onSelectChange={(e) =>
+                  setCurrentDate(new Date(parseInt(e as string), currentMonth, 1))
+                }
+              />
           </div>
           {/* Month Navigation Controls */}
           <div className="calendar__controls w-fit space-x-1">

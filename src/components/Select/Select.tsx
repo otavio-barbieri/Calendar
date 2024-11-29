@@ -1,37 +1,42 @@
 import { HTMLAttributes, useEffect, useRef, useState } from "react";
-
 import styles from "./select.module.css";
 
-type keyValueOptions = { key: string; value?: string | number };
+export type keyValueOptions = { label: string; value: string | number };
 
-interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange"> {
+interface SelectProps extends Omit<HTMLAttributes<HTMLDivElement>, "onChange" | "defaultValue"> {
   placeholder?: string;
-  defaultValue?: string;
-  onSelectChange: (value: string) => void;
-  value?: string;
-  options: string[] | keyValueOptions[];
+  defaultValue?: keyValueOptions;
+  onSelectChange: (value: string | number) => void;
+  useLabelAsValue?: boolean;
+  value?: keyValueOptions;
+  options: keyValueOptions[];
   isModal?: boolean;
   variant?: "default" | "ghost";
-  size?: "mini" | "fluid";
-  spacing?: "tigh" | "default";
+  size?: "mini" | "fluid" | "maxContent";
+  spacing?: "tight" | "default";
 }
 
 export default function Select({
   placeholder,
+  defaultValue,
   options,
-  value = "",
+  value,
   onSelectChange,
+  useLabelAsValue = false,
   variant = "default",
   size = "fluid",
   spacing = "default",
   ...rest
 }: SelectProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectShouldBeUpwards, setSelectMustBeUpwards] = useState<boolean>(true);
-  const [selectedOption, setSelectedOption] = useState<keyValueOptions>({
-    key: value || placeholder || "Selecione uma opção",
-    value: value,
-  });
+  const [selectShouldBeUpwards, setSelectMustBeUpwards] = useState<boolean>(false);
+  const [selectedOption, setSelectedOption] = useState<keyValueOptions>(
+    value
+    ||
+    defaultValue 
+    || 
+    { label: placeholder || "Selecione uma opção", value: value || "" }
+  );
 
   const styleVariants = {
     default: ["bg-gray-500"],
@@ -41,59 +46,65 @@ export default function Select({
   const sizeVariants = {
     mini: ["w-fit"],
     fluid: ["w-full", "min-w-fit"],
+    maxContent: ["w-max"]
   };
 
   const spacingVariants = {
     default: ["py-2 px-4"],
-    tigh: ["p-0"],
+    tight: ["p-0"],
   };
 
   const [focusedIndex, setFocusedIndex] = useState<number>(-1);
-
   const dropDownRef = useRef<HTMLDivElement>(null);
   const optionRefs = useRef<(HTMLLIElement | null)[]>([]);
 
+  // Toggle dropdown visibility
   const toggleDropDown = () => setIsOpen((prev) => !prev);
 
+  // Close dropdown when clicked outside
   useEffect(() => {
     const handleClickOutside = (event: Event) => {
-      if (
-        dropDownRef.current &&
-        !dropDownRef.current.contains(event.target as Node)
-      ) {
+      if (dropDownRef.current && !dropDownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
         setFocusedIndex(-1);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Focus on the option when `focusedIndex` changes
   useEffect(() => {
     if (focusedIndex >= 0 && optionRefs.current[focusedIndex]) {
       optionRefs.current[focusedIndex]?.focus();
     }
   }, [focusedIndex]);
 
+  // Handle position of the dropdown
   useEffect(() => {
     if (isOpen) {
       determineDropdownPosition();
     }
   }, [isOpen]);
 
-  const handleOptionClick = (option: string | keyValueOptions) => {
-    if (typeof option === "string") {
-      setSelectedOption({ key: option, value: option });
-    } else {
-      setSelectedOption({ ...option });
-    }
+  useEffect(() => {
+    setSelectedOption(value || defaultValue || { label: placeholder || "Selecione uma opção", value: "" });
+  }, [value, defaultValue, placeholder]);
+
+  // Handle option click
+  const handleOptionClick = (option: keyValueOptions) => {
+    setSelectedOption({
+      label: option.label,
+      value: option.value,
+    });
+
     setIsOpen(false);
     setFocusedIndex(-1);
-    onSelectChange(selectedOption.value?.toString() || "");
+    onSelectChange(option.value.toString());
   };
 
+  // Determine if dropdown should appear upwards
   const determineDropdownPosition = () => {
     if (dropDownRef.current) {
       const rect = dropDownRef.current.getBoundingClientRect();
@@ -107,7 +118,7 @@ export default function Select({
 
   return (
     <div
-      className={`cursor-pointer relative ${sizeVariants[size || "fluid"]} ${styles.select}`}
+      className={`cursor-pointer w-max text-lg relative ${sizeVariants[size || "fluid"]} ${styles.select}`}
       role="combobox"
       ref={dropDownRef}
       aria-haspopup="listbox"
@@ -115,32 +126,28 @@ export default function Select({
       {...rest}
     >
       <button
-        className={`border w-full rounded-lg mb-3 ${
-          spacingVariants[spacing || "default"]
-        } ${styleVariants[variant || "default"]}`}
+        className={`border w-full rounded-lg mb-3 capitalize ${spacingVariants[spacing || "default"]} ${styleVariants[variant || "default"]}`}
         onClick={() => {
           toggleDropDown();
           setFocusedIndex(0);
         }}
         aria-label="Select option"
       >
-        {selectedOption.key}
+        {selectedOption.label}
       </button>
       {isOpen && (
         <div
-          className={`absolute ${
-            selectShouldBeUpwards ? "bottom-[100%] mb-2" : "top-[100%] mt-2"
-          } left-0 z-10`}
+          className={`absolute ${selectShouldBeUpwards ? "bottom-[100%] mb-2" : "top-[100%] mt-2"} left-0 z-10`}
         >
           <ul
             className="grid gap-1 max-h-64 overflow-y-auto w-fit py-5 p-2 border rounded-lg bg-black"
             role="listbox"
-            aria-labelledby="select-button"
           >
             {options.map((option, index) => (
               <li
                 className="rounded-md capitalize text-center py-2 px-3 hover:bg-gray-700 text-balance break-words isolate"
-                key={index}
+                key={option.value || option.label} // Use `value` as key to avoid duplication
+                value={option.value || option.label}
                 tabIndex={0}
                 ref={(el) => (optionRefs.current[index] = el)}
                 role="option"
@@ -149,27 +156,19 @@ export default function Select({
                     handleOptionClick(option);
                   } else if (e.key === "ArrowDown") {
                     e.preventDefault();
-                    setFocusedIndex(
-                      (prevIndex) => (prevIndex + 1) % options.length
-                    );
+                    setFocusedIndex((prevIndex) => (prevIndex + 1) % options.length);
                   } else if (e.key === "ArrowUp") {
                     e.preventDefault();
-                    setFocusedIndex(
-                      (prevIndex) =>
-                        (prevIndex - 1 + options.length) % options.length
-                    );
+                    setFocusedIndex((prevIndex) => (prevIndex - 1 + options.length) % options.length);
                   } else if (e.key === "Escape") {
                     setIsOpen(false);
                     setFocusedIndex(-1);
                   }
                 }}
                 onClick={() => handleOptionClick(option)}
-                aria-selected={
-                  selectedOption.key ===
-                  (typeof option === "string" ? option : option.key)
-                }
+                aria-selected={selectedOption.value === option.value}
               >
-                {typeof option === "string" ? option : option.key}
+                {option.label}
               </li>
             ))}
           </ul>
