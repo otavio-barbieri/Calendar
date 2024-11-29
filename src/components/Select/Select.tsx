@@ -44,8 +44,8 @@ export default function Select({
   };
 
   const sizeVariants = {
-    mini: ["w-fit"],
-    fluid: ["w-full", "min-w-fit"],
+    mini: ["w-fit text-sm"],
+    fluid: ["w-full min-w-fit"],
     maxContent: ["w-max"]
   };
 

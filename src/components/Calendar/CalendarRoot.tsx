@@ -240,10 +240,10 @@ export default function CalendarRoot() {
               />
             </h2>
               <Select
-                size="maxContent"
+                size="mini"
                 variant="ghost"
                 spacing="tight"
-                className="text-sm"
+                //className="text-sm"
                 value={
                   keyValuesDate.year
                 }
