@@ -8,7 +8,6 @@ interface CalendarDayProps {
 function CalendarDay({
   day,
   selectedDay,
-  hasSaleInfo,
   onSelectDay,
 }: CalendarDayProps) {
   return (

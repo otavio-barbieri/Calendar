@@ -1,7 +1,7 @@
 import { HTMLAttributes } from "react";
 
 interface CalendarLegendProps extends HTMLAttributes<HTMLLIElement> {
-  label: "agendado" | "pago" | string;
+  label: "agendado" | "pago" | "feriado" | "pendente" | string;
   color: "bg-red-500" | "bg-green-500" | "bg-yellow-500" | "bg-gray-500";
 }
 
